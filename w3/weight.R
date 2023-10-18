@@ -21,13 +21,15 @@ histogram <- function(i) {
 	# print(w)
 	m <- mean(w)
 	sd <- sd(w)
-	cat(list[i], "の平均値=", print(m))
-	cat(list[i], "の標準偏差=", print(sd))
+	cat(list[i], "の平均値=", m, "\n")
+	cat(list[i], "の標準偏差=", sd, "\n")
 	# hist(w, xlab="体重", ylab="人数")
-	weights[i] %>% ggplot(aes(x = "人数")) + geom_histogram()
+	# weights[i] %>% ggplot(aes(x = "V1")) + geom_histogram()
+	ggplot(weights[i], aes(x = w)) + geom_histogram()
 }
 chartList <- lapply(1:2, function(i) {
 	histogram(i)
 })
 
 wrap_plots(chartList)
+# .vsc.attach()
