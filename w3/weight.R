@@ -8,12 +8,12 @@ histogram <- function(i) {
 	w <- weights[i][,1]
 	m <- mean(w)
 	sd <- sd(w)
-	
+
 	# 設問(2)
 	cat(list[i], "の平均値=", m, "\n", sep="")
 	cat(list[i], "の標準偏差=", sd, "\n", sep="")
 
-	ggplot(weights[i], aes(x = w)) + 
+	ggplot(weights[i], aes(x = w)) +
 		geom_histogram()+
 		labs(x = paste(list[i], "の体重", sep=""), y = "人数") +
 				geom_segment(aes(x = m,    y = -0.3, xend = m, yend = 5), colour="red")+
@@ -33,6 +33,7 @@ chartList <- lapply(1:2, function(i) {
 })
 
 wrap_plots(chartList)
+# ggsave("chartList.png")
 dataA <- weights[1][,1]
 dataB <- weights[2][,1]
 result <- t.test(
