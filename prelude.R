@@ -1,0 +1,10 @@
+# 私が開発時に実行する用
+# install.packages("tidyverse")
+library("tidyverse")
+# install.packages("patchwork")
+library("patchwork")
+# install.packages("devtools")
+# devtools::install_github("teunbrand/ggarrow")
+library("ggarrow")
+# devtools::install_github("nx10/httpgd")
+library("httpgd")

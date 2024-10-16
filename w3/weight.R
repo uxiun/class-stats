@@ -1,15 +1,12 @@
-
+# 設問2
 weights <- read.table("weight.txt", header=FALSE, skip=1)
 list <- c("A群", "B群")
-
 arrowheadline <- arrow_head_line(angle=0, lineend="butt")
 
 histogram <- function(i) {
 	w <- weights[i][,1]
 	m <- mean(w)
 	sd <- sd(w)
-
-	# 設問(2)
 	cat(list[i], "の平均値=", m, "\n", sep="")
 	cat(list[i], "の標準偏差=", sd, "\n", sep="")
 
@@ -28,33 +25,32 @@ histogram <- function(i) {
 		annotate("text", x= m-sd, y= -0.5, label= round(m-sd, 2))+
 		annotate("text", x= m+sd, y= -0.5, label= round(m+sd, 2))
 }
-chartList <- lapply(1:2, function(i) {
-	histogram(i)
+
+chart_list <- lapply(1:2, function(i) {histogram(i)})
+
+wrap_plots(chart_list) # なぜか作図されないので、もう一度手打ちして実行する必要がある
+
+# 設問3
+data_a <- weights[1][,1]
+data_b <- weights[2][,1]
+result <- t.test(x = data_a, y = data_b, var.equal = TRUE,
+	paired = TRUE # 対応がある
+)
+print(result)
+cat("対立仮説 =", result$p.value < 0.05, "\n") # 設問4
+
+# 設問5
+result <- t.test(x = data_a, y = data_b, var.equal = TRUE,
+	paired = FALSE # 対応がない
+)
+print(result)
+
+# 設問6
+# 正規性
+lapply(1:2, function(i) {
+	data <- weights[i][,1]
+	print(ks.test(data, "pnorm", mean=mean(data), sd=sd(data)))
 })
 
-wrap_plots(chartList)
-# ggsave("chartList.png")
-dataA <- weights[1][,1]
-dataB <- weights[2][,1]
-result <- t.test(
-	x = dataA,
-	y = dataB,
-	paired = TRUE, # 対応がある
-	var.equal = TRUE
-)
-print(result)
-p <- result$p.value
-ha <- p < 0.05
-cat("対立仮説 =", ha, "\n")
-
-result <- t.test(
-	x = dataA,
-	y = dataB,
-	paired = FALSE, # 対応がない
-	var.equal = TRUE
-)
-print(result)
-
-# 分散の等質性の検定
-result <- var.test(dataA, dataB)
-print(result)
+# 等分散性
+print(var.test(data_a, data_b))
