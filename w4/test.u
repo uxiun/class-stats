@@ -1,0 +1,37 @@
+
+stats.dfe groups = d.flatten groups\ dk.size - (dk.size groups)
+stats.ve : [[N]] -> N
+stats.ve groups =
+  groups
+    \> (group -> let
+      groupAverage = fn.sum group / (dk.size group \ fk.toFloat)
+      group \> (i -> pow (i - groupAverage) 2.0) \ fn.sum
+    )
+    \ fn.sum
+    / (dfe groups \ fk.toFloat)
+stats.va : [[N]] -> N
+stats.va groups =
+  (sa groups) / (dk.size groups - 1 \ fk.toFloat)
+
+stats.sa groups =
+  totalAverage = let
+    flat = d.flatten groups
+    fn.sum flat / (dk.size flat \ fk.toFloat)
+  groups
+    \> (group -> let
+      grouplen = dk.size group \ fk.toFloat
+      fn.pow (fn.sum group / grouplen - totalAverage) 2.0 * grouplen )
+    \ fn.sum
+
+stats.ex =
+  [
+  [13,11,6],
+  [11,10,7,7,5],
+  [8,7,5,5,4,3,3]]
+    \ (dk.map (dk.map fk.toFloat))
+
+> sa ex
+> va ex
+> ve ex
+> dfe ex
+> (va ex) / (ve ex)
