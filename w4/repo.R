@@ -1,18 +1,29 @@
-
-# 設問2
 example <- read.table("week4-example.txt", header=TRUE)
-arrowheadline <- arrow_head_line(angle=0, lineend="butt")
 cols <- colnames(example)
 
-# 設問2, 3
+# 設問2 発展課題
+frame <- do.call(rbind.data.frame,
+	lapply(cols, function(col) {
+		data.frame(weight = example[,col], group = factor(rep(col, length(example))))
+	})
+)
+
+for (col in cols) {
+	w <- frame$weight[frame$group == col]
+	m <- mean(w)
+	sd <- sd(w)
+	cat(col, "群の平均    :", round(m, 3), "\n")
+	cat(col, "群の標準偏差:", round(sd, 3), "\n")
+}
+
+# 設問3
+arrowheadline <- arrow_head_line(angle=0, lineend="butt")
+
 histogram <- function(i) {
 	c <- cols[i]
 	w <- example[,c]
 	m <- mean(w)
 	sd <- sd(w)
-
-	cat(c, "の平均値=", m, "\n", sep="")
-	cat(c, "の標準偏差=", sd, "\n", sep="")
 
 	ggplot(example[i], aes(x= w)) +
 		geom_histogram()+
@@ -23,34 +34,28 @@ histogram <- function(i) {
 		geom_arrow_segment(aes(xend= m - sd, y= 5, x= m), color= 2)+
 		geom_arrow_segment(aes(xend= m + sd, y= 5, x= m), color= 2)+
 		annotate("text", x= m, y= 5.2, label="平均")+
+		annotate("text", x= min(w) + 3, y= 4.5, label=paste("標準偏差", round(sd, 2)))+
 		annotate("text", x= m-sd, y= 5.5, label="平均-標準偏差")+
 		annotate("text", x= m+sd, y= 5.5, label="平均+標準偏差")+
 		annotate("text", x= m, y= -0.5, label= round(m, 2))+
 		annotate("text", x= m-sd, y= -0.5, label= round(m-sd, 2))+
 		annotate("text", x= m+sd, y= -0.5, label= round(m+sd, 2))
 }
-ggs <- lapply(seq_along(example), function(i) {
+ggplots <- lapply(seq_along(example), function(i) {
 	histogram(i)
 })
-wrap_plots(ggs)
+wrap_plots(ggplots)
 
 # 設問4
-print(paste("全data数", ncol(example)*nrow(example)) )
+cat("全data数", ncol(example)*nrow(example), "\n")
 
-kusuris <- unlist(lapply(cols, function(c) rep(c, length(example[,c]))))
-kusuri <- factor(kusuris)
-list <- unlist(example, use.names=F)
-
-res_aov <- aov(list~kusuri)
+res_aov <- aov(weight~group, data = frame)
 print(summary(res_aov))
+cat("効果量:", 191.7/2067.8, "\n")
 
 # 発展課題
-res_one <- oneway.test(list~kusuri, var.equal=TRUE)
-print(res_one)
+res_oneway <- oneway.test(weight~group, var.equal=TRUE, data = frame)
+print(res_oneway)
+res_bartlett <- bartlett.test(formula=weight~group, data = frame)
+print(res_bartlett)
 
-# 設問5
-resbar <- bartlett.test(formula=list~kusuri)
-print(resbar)
-
-# 設問(6)
-print(paste("対応のないときの効果量=", 283.4/2303.9))
