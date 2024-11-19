@@ -1,40 +1,7 @@
-# library("tidyverse")
-# library("patchwork")
+library("tidyverse")
 
-# 演習課題
 set.seed(482) # 乱数の種を設定
 randoms <- c(rnorm(2000, mean= 0, sd= 5)) # 平均0 分散5 の正規分布から2000個の乱数を生成して、vectorに収める
-
-# # 1
-# 	bs <- purrr::map_vec(1:100, \(x)
-# 		mean(sample(randoms, 10, replace=TRUE))
-# 	)
-
-# 	bs.mean <- mean(bs)
-# 	bs.var <- var(bs)
-# 	bs.sd <- sd(bs)
-
-# 	bs_frame <- data.frame(x= bs)
-
-# 	# hist(bs, freq=FALSE)
-# 	# lines(density(bs))
-# 	# quantile(bs, p= c(0.025, 0.975))
-# 	arrowheadline <- arrow_head_line(angle=0, lineend= "butt")
-# 	gg1 <- ggplot(bs_frame, aes(x= x))+
-# 		geom_histogram()+
-# 		annotate("segment", x = bs.mean, y = 0, xend = bs.mean, yend = 9, color = "red")+
-# 		annotate("segment", x = bs.mean - bs.sd, y = 0, xend = bs.mean - bs.sd, yend = 7, color = "red")+
-# 		annotate("segment", x = bs.mean + bs.sd, y = 0, xend = bs.mean + bs.sd, yend = 7, color = "red")+
-# 		# geom_arrow_segment(aes(x = bs.mean - bs.sd, y = -0.3, yend = 0), color= 2)+
-# 		# geom_arrow_segment(aes(x = bs.mean + bs.sd, y = -0.3, yend = 0), color= 2)+
-# 		annotate("text", x = bs.mean, y = 8, label=paste("平均", round(bs.mean, 2)), color = "red")+
-# 		annotate("text", x = bs.mean + bs.sd, y = 8, label= paste("標準偏差", round(bs.sd, 2)), color = "red")+
-# 		annotate("text", x = bs.mean, y = -0.3, label= round(bs.mean, 2))+
-# 		annotate("text", x = bs.mean - bs.sd, y = -0.3, label= round(bs.mean - bs.sd, 2))+
-# 		annotate("text", x = bs.mean + bs.sd, y = -0.3, label= round(bs.mean + bs.sd, 2))
-
-# 	print(gg1)
-
 
 rs <- c() #繰り返し回数のvector
 r <- 10
@@ -56,19 +23,6 @@ bss <- purrr::map(rs, \(r) {
 
 	list(bs)
 })
-
-bsdf <- data.frame(
-	r = as.factor(rs),
-	mean = purrr::map_vec(bss, \(bs) mean(bs[[1]]))
-)
-print("bsdf")
-print(bsdf)
-
-# 各反復回数の平均値
-print(ggplot(bsdf, aes(x = r))+
-	geom_point(size = 4, aes(y = mean))+
-	labs(title = "繰り返し回数ごとの平均値", x = "繰り返し回数", y = "平均")
-)
 
 # pickrs: vector(長さ2), picks: list<vector(各r)>(2) から rowss: list<list<vector(r=,b=)>(各r)>(2) を作る
 rowss <- lapply(seq_along(pickrs), \(i) {
